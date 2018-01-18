@@ -39,10 +39,59 @@ class GraphViewController: UITableViewController {
         super.viewWillAppear(animated)
         StartingRealmMethods.addEntriestoRealm()
     }
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
+    }
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = indexPath.row
+        if(row==0)
+        {
+            return CGFloat(44)
+        }
+        return CGFloat(325)
+    }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let row = indexPath.row
+        if(row==0)
+        {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ShowFiltersCell", for: indexPath) as! ShowFiltersCell
+            cell.delegate = self
+            let button = cell.HideGreenBarsButton!
+            if(showGreenBars==1)
+            {
+                button.setTitle("Hide Green Bars", for: .normal)
+            }
+            else
+            {
+                button.setTitle("Show Green Bars", for: .normal)
+            }
+            return cell
+        }
+        else if(row == 1)
+        {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SlotGraphViewCell", for: indexPath) as! SlotGraphViewCell
+            cell.label.text = "Morning"
+            chtChart = cell.chtChart
+            //draw the chart
+            updateGraph(morning)
+            return cell
+        }
+            //Will enter if row = 2
+        else
+        {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SlotGraphViewCell", for: indexPath) as! SlotGraphViewCell
+            cell.label.text = "Night"
+            chtChart = cell.chtChart
+            //draw the chart
+            updateGraph(night)
+            return cell
+        }
+        
+    }
     func updateGraph(_ records:Results<Record>?)
     {
-        print(records)
-        chtChart.noDataText = "No Data Available"
+        //chtChart.noDataText = "No Data Available"
         if(records==nil || noData==1 || records!.count==0)
         {
             return
@@ -57,13 +106,12 @@ class GraphViewController: UITableViewController {
             dates.append(UIMethods.stringOfOnlyDate(records![i].date!))
             //barLabels.append(UIMethods.stringOfOnlyTime(records[i].date!))
             let tempslot = realm.object(ofType: MedicineSlot.self, forPrimaryKey: records![i].medicineslotID)!
-            let temp = UIMethods.getDifference(records![i].date!,tempslot.IdealTime, 60)
+            let temp = UIMethods.getDifference(records![i].date!,tempslot.IdealTime)
             var yValue = Double(temp)/15.0
-            if(temp>60)
+            if(temp>2*tempslot.AcceptableErrorTime)
             {
                 yValue = Double(5)
             }
-            print(i,temp,yValue)
             if(showGreenBars==0 && temp<=tempslot.AcceptableErrorTime)
             {
                 continue;
@@ -85,6 +133,14 @@ class GraphViewController: UITableViewController {
             }
             //print(value)
             barChartEntry.append(value) // here we add it to the data set
+        }
+        if(barChartEntry.count==0)
+        {
+            chtChart.data = nil
+            
+            //We need to show dates and the size of dates is records!.count+1 because we add an empty string in the beginning.
+            chtChart.noDataText = "All tablets taken on time between " + dates[1] + " and " + dates[records!.count]
+            return
         }
         let barChartDataSet = BarChartDataSet.init(values: barChartEntry, label: "Deviation")
         barChartDataSet.colors = colors
@@ -153,60 +209,11 @@ class GraphViewController: UITableViewController {
 //Tableview methods
 extension GraphViewController:ShowFiltersCellDelegate
 {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = indexPath.row
-        if(row==0)
-        {
-            return CGFloat(44)
-        }
-        return CGFloat(325)
-    }
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let row = indexPath.row
-        if(row==0)
-        {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ShowFiltersCell", for: indexPath) as! ShowFiltersCell
-            cell.delegate = self
-            let button = cell.HideGreenBarsButton!
-            if(showGreenBars==1)
-            {
-                button.setTitle("Hide Green Bars", for: .normal)
-            }
-            else
-            {
-                button.setTitle("Show Green Bars", for: .normal)
-            }
-            return cell
-        }
-        else if(row == 1)
-        {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SlotGraphViewCell", for: indexPath) as! SlotGraphViewCell
-            cell.label.text = "Morning"
-            chtChart = cell.chtChart
-            //draw the chart
-            updateGraph(morning)
-            return cell
-        }
-        //Will enter if row = 2
-        else
-        {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SlotGraphViewCell", for: indexPath) as! SlotGraphViewCell
-            cell.label.text = "Night"
-            chtChart = cell.chtChart
-            //draw the chart
-            updateGraph(night)
-            return cell
-        }
-        
-    }
     func HideGreenBarsButton_TouchUpInside(_ cell:UITableViewCell,_ HideGreenBarsButton:UIButton)
     {
-        showGreenBars=1-showGreenBars
-        let indexPath = IndexPath.init(row: 0, section: 0)
-        tableView.reloadData()
+        print("1")
+        showGreenBars = 1 - showGreenBars
+        print("2")
+        tableView.reloadSections([0], with: .automatic)
     }
 }

@@ -115,10 +115,10 @@ class CameraViewController: UIViewController {
             destinationVC.image = self.image
         }
     }
-    func Askforpermissions()
+    /*func Askforpermissions()
     {
         PHPhotoLibrary.requestAuthorization(<#T##handler: (PHAuthorizationStatus) -> Void##(PHAuthorizationStatus) -> Void#>)
-    }
+    }*/
 }
 extension CameraViewController: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {

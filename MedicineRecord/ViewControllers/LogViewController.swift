@@ -16,7 +16,7 @@ class LogViewController: UITableViewController {
     let albumName = "Tablets"
     var realm = try! Realm()
     var records:Results<Record>!
-    let maxLimit = 60
+    //let maxLimit = 60
     var record:Record!
     var slotID:String!
     var medicineslot:MedicineSlot!
@@ -24,11 +24,11 @@ class LogViewController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         records = realm.objects(Record.self).sorted(byKeyPath: "timestamp", ascending: false)
-        print(records)
+       // print(records)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        StartingRealmMethods.addEntriestoRealm()
+       // StartingRealmMethods.addEntriestoRealm()
         tableView.reloadData()
     }
     override func didReceiveMemoryWarning() {
@@ -67,8 +67,9 @@ class LogViewController: UITableViewController {
         slotID = record.medicineslotID
         let results_medicineSlot:MedicineSlot = realm.object(ofType: MedicineSlot.self, forPrimaryKey: slotID)!
         medicineslot = results_medicineSlot
+        let maxLimit = medicineslot.AcceptableErrorTime*2
         //print(row,medicineslot.IdealTime)
-        var timedifference = UIMethods.getDifference(record.date!,medicineslot.IdealTime,maxLimit)
+        var timedifference = UIMethods.getDifference(record.date!,medicineslot.IdealTime)
         if(timedifference>maxLimit)
         {
             cell.DeviationLabel.text = "Deviation: >" + String(maxLimit) + "Mins"

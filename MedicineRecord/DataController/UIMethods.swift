@@ -11,10 +11,8 @@ import RealmSwift
 import UIKit
 
 class UIMethods {
-    static func getDifference(_ date:Date,_ IdealTime:List<Int>, _ maxLimit:Int) -> Int
+    /*static func getDifference(_ date:Date,_ IdealTime:List<Int>, _ maxLimit:Int) -> Int
     {
-        //var date = tdate
-        //date.addTimeInterval(330*60)
         var diff = 0
         let calendar = Calendar.current
         let hourofRecord = calendar.component(.hour, from:date)
@@ -24,10 +22,10 @@ class UIMethods {
         let minuteofSlot = IdealTime[1]
         
         let timeOfDay_Record = hourofRecord*60 + minuteofRecord
-        let timeOfDay_Slot = hourofSlot*60+minuteofRecord
+        let timeOfDay_Slot = hourofSlot*60+minuteofSlot
         
         //case 1:
-        if(hourofSlot*60+minuteofRecord<maxLimit)
+        if(hourofSlot*60+minuteofSlot<maxLimit)
         {
             //This will be at the start of the day
             if(hourofSlot<hourofRecord && hourofRecord<2*maxLimit)
@@ -63,6 +61,48 @@ class UIMethods {
                 diff = (hourofRecord*60+minuteofRecord) - (hourofSlot*60+minuteofSlot)
             }
         }
+        return diff
+     }
+ */
+    static func getDifference(_ date:Date,_ IdealTime:List<Int>) -> Int
+    {
+        var diff = 0
+        var diff1 = 0
+        var diff2 = 0
+        let calendar = Calendar.current
+        let hourofRecord = calendar.component(.hour, from:date)
+        let minuteofRecord = calendar.component(.minute, from: date)
+        let hourofSlot = IdealTime[0]
+        let minuteofSlot = IdealTime[1]
+        
+        let timeOfDay_Record = hourofRecord*60 + minuteofRecord
+        let timeOfDay_Slot = hourofSlot*60+minuteofSlot
+        
+        
+        //print(hourofSlot,minuteofSlot,hourofRecord,minuteofRecord)
+        //print(timeOfDay_Record,timeOfDay_Slot)
+        
+        //calculating diff1, this is assuming time of record is before time of slot
+        if(timeOfDay_Slot>timeOfDay_Record)
+        {
+            diff1 = timeOfDay_Slot - timeOfDay_Record
+            diff2 = 1440 - timeOfDay_Slot + timeOfDay_Record
+        }
+        else
+        {
+            diff1 = timeOfDay_Record - timeOfDay_Slot
+            diff2 = 1440 - timeOfDay_Record + timeOfDay_Slot
+        }
+        
+        if(diff1<diff2)
+        {
+            diff = diff1
+        }
+        else
+        {
+            diff = diff2
+        }
+        //print(diff,diff1,diff2)
         return diff
     }
     

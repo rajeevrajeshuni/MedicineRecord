@@ -25,7 +25,8 @@ class ConfirmImageViewController: UIViewController {
         photo.image = self.image
         user = User.defaultUser(realm)
         medicineslots = realm.objects(MedicineSlot.self).filter("current = %@",1)
-        SlotNameLabel.text = getnearestSlot().SlotName
+        SlotNameLabel.text = "Select"
+        SlotSelected = -1
     }
 
     override func didReceiveMemoryWarning() {
@@ -42,11 +43,19 @@ class ConfirmImageViewController: UIViewController {
     }
     @IBAction func SaveButton_TouchUpInside(_ sender: Any) {
         //writePhoto(image)
-        saveinDatabase()
-        dismiss(animated: true, completion: nil)
+        let isSaved = saveinDatabase()
+        if(isSaved)
+        {
+            dismiss(animated: true, completion: nil)
+        }
     }
     @IBAction func SlotChangeButton_TouchUpInside(_ sender: Any) {
-        let alert = UIAlertController(title:"Are you sure? This operation is permanent.",message:"",preferredStyle: .actionSheet)
+        let alert = UIAlertController(title:"Select a Medicine Slot",message:"",preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction.init(title: "Select", style: .default, handler: {
+            (action) -> Void in
+            self.SlotNameLabel.text = "Select"
+            self.SlotSelected = -1
+        }))
         for i in 0..<medicineslots.count{
             alert.addAction(UIAlertAction(title:medicineslots[i].SlotName,style: .default,handler: {
                 (action) -> Void in
@@ -56,21 +65,33 @@ class ConfirmImageViewController: UIViewController {
         }
         present(alert,animated: true,completion: nil)
     }
-    func saveinDatabase()
+    func saveinDatabase() -> Bool
     {
-        let imagedata:Data = UIImageJPEGRepresentation(image, 0.1)! as Data
-        let medicineslot = medicineslots[SlotSelected]
-        let date = Date()
-        let user = User.defaultUser(realm)
-        let record = Record(medicineslotID: medicineslot.SlotID, user: user, imageData: imagedata, date: date)
-        try! realm.write {
-            realm.add(record)
+        if(SlotSelected == -1)
+        {
+            showAlert(with: "Select a Medicine Slot.")
+            //Save UnSuccessful
+            return false
+        }
+        else
+        {
+            let imagedata:Data = UIImageJPEGRepresentation(image, 0.1)! as Data
+            let medicineslot = medicineslots[SlotSelected]
+            let date = Date()
+            let user = User.defaultUser(realm)
+            let record = Record(medicineslotID: medicineslot.SlotID, user: user, imageData: imagedata, date: date)
+            try! realm.write {
+                realm.add(record)
+            }
+            //Save Successful
+            return true
         }
     }
-    func getnearestSlot() -> MedicineSlot
-    {
-        SlotSelected=0
-        return medicineslots[0]
+    func showAlert(with text:String){
+        let alert = UIAlertController(title:text,message:"",preferredStyle: .alert)
+        let action = UIAlertAction(title: "Ok", style: .default, handler: nil)
+        alert.addAction(action)
+        present(alert,animated: true,completion: nil)
     }
     func writePhoto(_ image:UIImage)
     {
