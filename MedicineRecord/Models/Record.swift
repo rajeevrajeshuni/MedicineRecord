@@ -12,15 +12,16 @@ class Record:Object
 {
     @objc dynamic var medicineslotID:String?
     @objc dynamic var user:User?
-    @objc dynamic var imageData:Data?
+    @objc dynamic var imageID:String?
     @objc dynamic var RecordID = UUID().uuidString
     @objc dynamic var date:Date?
+    //Number of minutes for the date from the start of the day. Actually this value is unneccesary. So remove it in the next version.
     @objc dynamic var timestamp:Double = 0
-    convenience init(medicineslotID:String,user:User,imageData:Data,date:Date) {
+    convenience init(medicineslotID:String,user:User,imageID:String,date:Date) {
         self.init()
         self.medicineslotID = medicineslotID
         self.user = user
-        self.imageData = imageData
+        self.imageID = imageID
         self.date = date
         self.timestamp = date.timeIntervalSince1970
     }

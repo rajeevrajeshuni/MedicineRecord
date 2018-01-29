@@ -117,39 +117,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Oxetol - 750mg,Propranolol 80mg" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="UMI-oa-s7s">
-                                <rect key="frame" x="0.0" y="64" width="320" height="50"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="eHu-tC-b49"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nsM-dI-W2b">
-                                <rect key="frame" x="0.0" y="114" width="320" height="405"/>
+                                <rect key="frame" x="0.0" y="64" width="320" height="455"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="FZ3-Jl-KMr" firstAttribute="bottom" secondItem="nsM-dI-W2b" secondAttribute="bottom" id="7xM-lb-w3d"/>
                             <constraint firstItem="FZ3-Jl-KMr" firstAttribute="trailing" secondItem="nsM-dI-W2b" secondAttribute="trailing" id="aBj-Ez-dO3"/>
-                            <constraint firstItem="FZ3-Jl-KMr" firstAttribute="trailing" secondItem="UMI-oa-s7s" secondAttribute="trailing" id="hvV-Mo-BMM"/>
-                            <constraint firstItem="UMI-oa-s7s" firstAttribute="leading" secondItem="FZ3-Jl-KMr" secondAttribute="leading" id="jdp-2W-vqq"/>
-                            <constraint firstItem="UMI-oa-s7s" firstAttribute="top" secondItem="FZ3-Jl-KMr" secondAttribute="top" id="muq-cO-NjB"/>
+                            <constraint firstItem="nsM-dI-W2b" firstAttribute="top" secondItem="FZ3-Jl-KMr" secondAttribute="top" id="gRt-Ax-kMz"/>
                             <constraint firstItem="nsM-dI-W2b" firstAttribute="leading" secondItem="FZ3-Jl-KMr" secondAttribute="leading" id="oa8-Ay-gDA"/>
-                            <constraint firstItem="nsM-dI-W2b" firstAttribute="top" secondItem="UMI-oa-s7s" secondAttribute="bottom" id="u6I-cz-eU1"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="FZ3-Jl-KMr"/>
                     </view>
                     <connections>
-                        <outlet property="MedicinesTextView" destination="UMI-oa-s7s" id="2wv-Cr-RRt"/>
                         <outlet property="RecordImageView" destination="nsM-dI-W2b" id="4AZ-LK-bcb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ktZ-Xi-4dc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2945" y="-126"/>
+            <point key="canvasLocation" x="2943.75" y="-126.7605633802817"/>
         </scene>
         <!--Log Nav-->
         <scene sceneID="aJQ-Wy-eid">

@@ -123,7 +123,7 @@ class CameraViewController: UIViewController {
 extension CameraViewController: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if let imageData = photo.fileDataRepresentation() {
-            print(imageData)
+            //print(imageData)
             self.image = UIImage(data: imageData)
         }
         performSegue(withIdentifier: "ConfirmImageSegue", sender: nil)

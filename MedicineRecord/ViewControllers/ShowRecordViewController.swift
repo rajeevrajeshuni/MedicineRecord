@@ -16,11 +16,9 @@ class ShowRecordViewController:UIViewController{
         super.viewDidLoad()
         let slotID = record.medicineslotID
         let medicineslot = realm.object(ofType: MedicineSlot.self, forPrimaryKey: slotID)!
-        MedicinesTextView.text = getMedicinestext(medicineslot.Medicines)
-        RecordImageView.image = UIImage(data:record.imageData!)
+        let imageObj = realm.object(ofType: Image.self, forPrimaryKey: record.imageID!)!
+        RecordImageView.image = UIImage(data:imageObj.imageData!)
     }
-    
-    @IBOutlet weak var MedicinesTextView: UITextView!
     @IBOutlet weak var RecordImageView: UIImageView!
     func getMedicinestext(_ medicines:RealmSwift.List<Medicine>) -> String
     {

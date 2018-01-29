@@ -13,7 +13,7 @@ class GetRecords
     static var realm = try! Realm()
     static var slots:Results<MedicineSlot>!
     //Will have the start time and end time in hrs,mins format in an array.
-    static func getSlotsinTimeInterval(_ startTime:[Int],_ endTime:[Int]) -> [MedicineSlot]
+    /*static func getSlotsinTimeInterval(_ startTime:[Int],_ endTime:[Int]) -> [MedicineSlot]
     {
         slots = realm.objects(MedicineSlot.self)
         var slotsinTimeInterval:[MedicineSlot] = []
@@ -48,7 +48,7 @@ class GetRecords
                 filterString = filterString + " OR medicineslotID = '" + slotsinTimeInterval[i].SlotID  + "'"
             }
         }
-        print(filterString)
+        //print(filterString)
         return realm.objects(Record.self).filter(filterString).sorted(byKeyPath:"date")
-    }
+    }*/
 }

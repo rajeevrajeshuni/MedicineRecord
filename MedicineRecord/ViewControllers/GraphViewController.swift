@@ -13,22 +13,23 @@ import RealmSwift
 class GraphViewController: UITableViewController {
     var showGreenBars = 1
     let realm = try! Realm()
-    let timings = ["","15Mins","30Mins","45Mins","60Mins",">60Min"]
-    //var barLabels_Morning:[String] = []
-    //var barLabel_Night:[String] = []
+    //Fix these timings in the next version.
+    var timings = ["0min","","","","Missed"]
     var dates:[String] = [""] //These are X labels
-    var morning:Results<Record>! //All records with slots between the times given as input.
-    var night:Results<Record>! //All records with slots between the times given as input.
+    var slotRecords:Results<Record>!
+    //var morning:Results<Record>! //All records with slots between the times given as input.
+    //var night:Results<Record>! //All records with slots between the times given as input.
     var chtChart:BarChartView!
     var noData = 0
+    var AcceptableErrorTime = 0
+    var activeMedicineSlots:Results<MedicineSlot>!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        //print(Date())
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
-        morning = GetRecords.getRecordsinTimeInterval([8,0], [11,0])
-        night = GetRecords.getRecordsinTimeInterval([20,0], [23,0])
-        //chtChart.noDataText = "No Data Available"
+        activeMedicineSlots = realm.objects(MedicineSlot.self).filter("current = %@",1)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -37,10 +38,10 @@ class GraphViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
-        StartingRealmMethods.addEntriestoRealm()
+        //StartingRealmMethods.addEntriestoRealm()
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 1 + activeMedicineSlots.count
     }
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = indexPath.row
@@ -68,26 +69,17 @@ class GraphViewController: UITableViewController {
             }
             return cell
         }
-        else if(row == 1)
-        {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SlotGraphViewCell", for: indexPath) as! SlotGraphViewCell
-            cell.label.text = "Morning"
-            chtChart = cell.chtChart
-            //draw the chart
-            updateGraph(morning)
-            return cell
-        }
-            //Will enter if row = 2
         else
         {
+            let i = row - 1
             let cell = tableView.dequeueReusableCell(withIdentifier: "SlotGraphViewCell", for: indexPath) as! SlotGraphViewCell
-            cell.label.text = "Night"
+            cell.label.text = activeMedicineSlots[i].SlotName
             chtChart = cell.chtChart
+            slotRecords = realm.objects(Record.self).filter("medicineslotID = %@",activeMedicineSlots[i].SlotID)
             //draw the chart
-            updateGraph(night)
+            updateGraph(slotRecords)
             return cell
         }
-        
     }
     func updateGraph(_ records:Results<Record>?)
     {
@@ -96,36 +88,73 @@ class GraphViewController: UITableViewController {
         {
             return
         }
+        let medicineslot = getmedicineslot(forRecord:records![0])
+        self.AcceptableErrorTime = medicineslot.AcceptableErrorTime
+        setYlabels(medicineslot.AcceptableErrorTime)
         dates = [""]
         //barLabels = [""]
         var barChartEntry  = [BarChartDataEntry]() //this is the Array that will eventually be displayed on the graph.
         //here is the for loop
         var colors:[NSUIColor] = []
         var xValue:Double = 1
-        for i in 0..<records!.count {
-            dates.append(UIMethods.stringOfOnlyDate(records![i].date!))
-            //barLabels.append(UIMethods.stringOfOnlyTime(records[i].date!))
-            let tempslot = realm.object(ofType: MedicineSlot.self, forPrimaryKey: records![i].medicineslotID)!
-            let temp = UIMethods.getDifference(records![i].date!,tempslot.IdealTime)
-            var yValue = Double(temp)/15.0
-            if(temp>2*tempslot.AcceptableErrorTime)
+        let startDate = records![0].date!
+        let endDate_String = UIMethods.stringOfOnlyDate(getendDate_Chart(records![records!.count-1])) //get the end date.
+        var i = 0
+        var tempdate = startDate
+        while(true)
+        {
+            let tempdate_string = UIMethods.stringOfOnlyDate(tempdate)
+            
+            //If this if condition is true then the entry for that particular day is completely missing.
+            if(i>=records!.count || (UIMethods.stringOfOnlyDate(records![i].date!) != tempdate_string))
             {
-                yValue = Double(5)
+                dates.append(tempdate_string)
+                let value = BarChartDataEntry.init(x: xValue, y: 4.0)
+                colors.append(NSUIColor.purple)
+                xValue = xValue+1
+                barChartEntry.append(value)
+                if(tempdate_string == endDate_String)
+                {
+                    break;
+                }
+                tempdate = Calendar.current.date(byAdding: .day, value: 1, to: tempdate)!
+                continue
             }
-            if(showGreenBars==0 && temp<=tempslot.AcceptableErrorTime)
+            
+            //barLabels.append(UIMethods.stringOfOnlyTime(records[i].date!))
+            let temp = UIMethods.getDifference(records![i].date!,medicineslot.IdealTime)
+            
+            if(showGreenBars == 0 && temp <= medicineslot.AcceptableErrorTime)
             {
+                //print("*",tempdate_string,i,showGreenBars,temp,medicineslot.AcceptableErrorTime)
+                i = i+1
+                if(tempdate_string == endDate_String)
+                {
+                    break;
+                }
+                tempdate = Calendar.current.date(byAdding:.day, value:1, to:tempdate)!
                 continue;
             }
+            
+            dates.append(tempdate_string)
+            var yValue = Double(temp)/Double(medicineslot.AcceptableErrorTime)
+            
+            //Assigns for values of > AccetableErrorTime
+            if(temp>medicineslot.AcceptableErrorTime)
+            {
+                yValue = Double(3)
+            }
+            else
+            {
+                yValue = 2*yValue
+            }
+            
             let value = BarChartDataEntry.init(x: xValue, y: yValue)// here we set the X and Y status in a data chart entry
             //incrementing xValue
             xValue = xValue+1
-            if(temp>60)
+            if(temp>medicineslot.AcceptableErrorTime)
             {
                 colors.append(NSUIColor.red)
-            }
-            else if(temp>30)
-            {
-                colors.append(NSUIColor.yellow)
             }
             else
             {
@@ -133,13 +162,19 @@ class GraphViewController: UITableViewController {
             }
             //print(value)
             barChartEntry.append(value) // here we add it to the data set
+            i = i+1
+            if(tempdate_string == endDate_String)
+            {
+                break;
+            }
+            tempdate = Calendar.current.date(byAdding: .day, value: 1, to: tempdate)!
         }
         if(barChartEntry.count==0)
         {
             chtChart.data = nil
             
             //We need to show dates and the size of dates is records!.count+1 because we add an empty string in the beginning.
-            chtChart.noDataText = "All tablets taken on time between " + dates[1] + " and " + dates[records!.count]
+            chtChart.noDataText = "All tablets taken on time between " + UIMethods.stringOfOnlyDate(startDate) + " and " + endDate_String
             return
         }
         let barChartDataSet = BarChartDataSet.init(values: barChartEntry, label: "Deviation")
@@ -151,24 +186,32 @@ class GraphViewController: UITableViewController {
         chartData.setValueFormatter(DefaultValueFormatter(block:stringforValue))
         
         chtChart.data = chartData
-        setChartStyle(chtChart)
+        setChartStyle(chtChart,medicineslot.AcceptableErrorTime)
     }
-    func setChartStyle(_ chtChart:BarChartView)->Void
+    func setChartStyle(_ chtChart:BarChartView,_ AcceptableErrorTime:Int)
     {
-        
+        chtChart.highlightPerTapEnabled = false
+        chtChart.doubleTapToZoomEnabled = false
         chtChart.chartDescription?.enabled = false
         chtChart.accessibilityScroll(.down)
         chtChart.noDataText = "No data available."
         
         //Disable top scrolling
         
+        
+        
         chtChart.xAxis.drawGridLinesEnabled = false
         chtChart.xAxis.labelPosition = .bottom
         chtChart.xAxis.granularity = 1
         
         //Try to remove this by adding minimum spacing between labels
-        chtChart.setVisibleXRange(minXRange: 5, maxXRange: 5)
-        //chtChart.moveViewToX(10)
+        chtChart.setVisibleXRangeMaximum(5.0)
+        
+        //Move the X axis to a specific point.
+        if(dates.count>3)
+        {
+            chtChart.moveViewToX(Double(dates.count)-3)
+        }
         chtChart.xAxis.axisMinimum = 0
         //dates = loadDates()
         chtChart.xAxis.valueFormatter = IndexAxisValueFormatter(values:dates)
@@ -190,20 +233,69 @@ class GraphViewController: UITableViewController {
         chtChart.dragYEnabled = false //Why is this not working?
         
         let l = chtChart.legend
-        let c:CGFloat = CGFloat.nan
-        let greenLegendEntry = LegendEntry.init(label: "Green: <30min, Yellow: 30-60min, Red: >60min", form: .square, formSize:CGFloat(0), formLineWidth: c, formLineDashPhase: c, formLineDashLengths: nil, formColor: NSUIColor.green)
-        l.setCustom(entries: [greenLegendEntry])
+        l.enabled = false
+        /*let c:CGFloat = CGFloat.nan
+        let legendString = "Green: <" + String(AcceptableErrorTime) + "min, Red: >" + String(2*AcceptableErrorTime) + "min, Purple: Missed Medicine"
+        let customLegendEntry = LegendEntry.init(label: legendString, form: .square, formSize:CGFloat(0), formLineWidth: c, formLineDashPhase: c, formLineDashLengths: nil, formColor: NSUIColor.green)
+        l.setCustom(entries: [customLegendEntry])*/
+        
+    }
+    // We receive the last record in the Results from the realm.
+    func getendDate_Chart(_ record:Record) -> Date
+    {
+        let slotID = record.medicineslotID!
+        let lastRecordDate = record.date!
+        let date = Date()
+        let calendar = Calendar.current
+        
+        
+        //If there is already a record for the current date.
+        if(UIMethods.stringOfOnlyDate(lastRecordDate) == UIMethods.stringOfOnlyDate(date))
+        {
+            return date
+        }
+        
+        
+        let hour = calendar.component(.hour, from: date)
+        let minute = calendar.component(.minute, from: date)
+        let timeofDay = hour*60+minute
+        let medicineslot = realm.object(ofType: MedicineSlot.self, forPrimaryKey: slotID)!
+        //Checking whether medicines time has passed for the current day.
+        if(timeofDay > medicineslot.timeofDayinMinutes + medicineslot.AcceptableErrorTime)
+        {
+            return date
+        }
+        else
+        {
+            //return previosu day of the current date.
+            return calendar.date(byAdding: .day, value: -1, to: date)!
+        }
     }
     func stringforValue(_ value: Double,_ entry: ChartDataEntry,_ dataSetIndex: Int,_ viewPortHandler: ViewPortHandler?) -> String
     {
-        if(entry.y==5)
+        if(entry.y==4)
         {
-            return ">60"
+            return "Missed"
         }
-        return String(entry.y*15)
+        if(entry.y==3)
+        {
+            return ">" + String(AcceptableErrorTime) + "min"
+        }
+        return String(entry.y*Double(AcceptableErrorTime/2))
     }
     @IBAction func RefreshGraph(_ sender: UIBarButtonItem) {
         tableView.reloadData()
+    }
+    func setYlabels(_ AcceptableErrorTime:Int)
+    {
+        timings[1] = String(AcceptableErrorTime/2) + "min"
+        timings[2] = String(AcceptableErrorTime) + "min"
+        timings[3] = ">" + timings[2]
+    }
+    func getmedicineslot(forRecord record:Record) -> MedicineSlot
+    {
+        let slotID = record.medicineslotID!
+        return realm.object(ofType: MedicineSlot.self, forPrimaryKey: slotID)!
     }
 }
 //Tableview methods
@@ -211,9 +303,9 @@ extension GraphViewController:ShowFiltersCellDelegate
 {
     func HideGreenBarsButton_TouchUpInside(_ cell:UITableViewCell,_ HideGreenBarsButton:UIButton)
     {
-        print("1")
+        //print("1")
         showGreenBars = 1 - showGreenBars
-        print("2")
+        //print("2")
         tableView.reloadSections([0], with: .automatic)
     }
 }

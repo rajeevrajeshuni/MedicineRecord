@@ -11,34 +11,29 @@ import RealmSwift
 
 class MedicineSlot:Object{
     
-    convenience init(IdealTime:RealmSwift.List<Int>,Medicines:RealmSwift.List<Medicine>, SlotName:String, ErrorTime:Int)
+    convenience init(timeofDay:Int, SlotName:String, ErrorTime:Int)
     {
         self.init()
-        self.IdealTime = IdealTime
-        self.Medicines = Medicines
-        self.SlotName = SlotName
+        self.timeofDay = timeofDay
         self.AcceptableErrorTime = ErrorTime
-        self.timeofDayinMinutes = self.IdealTime[0]*60 + self.IdealTime[1]
     }
-    
      //These values should be set by the user in settings.
-    var IdealTime = RealmSwift.List<Int>()  //value in index 0 denotes the hour and index 1 denotes the minutes in 24hr format.
-    var Medicines = RealmSwift.List<Medicine>()
-    @objc dynamic var SlotName:String = "Medicine" //Must be unique
+    //var Medicines = RealmSwift.List<Medicine>()
     @objc dynamic var AcceptableErrorTime:Int = 0 //value denotes time in minutes.
-    @objc dynamic var SlotID = UUID().uuidString
     //Sepcifies if the medicine slot is currently used or an old one. It's important to keep the old slots because we still need to maintain the old records even if the meds changed.
     @objc dynamic var current = 1
-    @objc dynamic var timeofDayinMinutes:Int = 0
+    @objc dynamic var timeofDay:Int = 0
     
     override static func primaryKey() -> String{
-        return "SlotID"
+        return "timeofDay"
     }
     
     @discardableResult
     func TimeinString()->String
     {
-        let time = self.IdealTime
+        var time = [0,0]
+        time[0] = Int(timeofDay/60)
+        time[1] = timeofDay%60
         var hour = String(time[0])
         var minutes = String(time[1])
         //var ans:String = ""

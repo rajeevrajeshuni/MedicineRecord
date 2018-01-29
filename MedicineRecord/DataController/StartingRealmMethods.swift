@@ -13,11 +13,11 @@ import RealmSwift
 class StartingRealmMethods
 {
     static let realm = try! Realm()
-    static func addEntriestoRealm()
+    /*static func addEntriestoRealm()
     {
         //getslotID's
         let slotIDs = realm.objects(MedicineSlot.self)
-        print(slotIDs)
+        //print(slotIDs)
         let calendar = Calendar.current
         var hourofRecord = 0
         var minuteofRecord = 0
@@ -82,5 +82,5 @@ class StartingRealmMethods
              image = result!
         })
         return image
-    }
+    }*/
 }

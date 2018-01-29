@@ -42,7 +42,9 @@ class ConfirmImageViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     @IBAction func SaveButton_TouchUpInside(_ sender: Any) {
-        //writePhoto(image)
+        let compressedImageDate = UIImageJPEGRepresentation(image,CGFloat(0.1))!
+        image = UIImage(data: compressedImageDate)!
+        
         let isSaved = saveinDatabase()
         if(isSaved)
         {
@@ -67,6 +69,9 @@ class ConfirmImageViewController: UIViewController {
     }
     func saveinDatabase() -> Bool
     {
+        //Backup in Camera Roll
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        
         if(SlotSelected == -1)
         {
             showAlert(with: "Select a Medicine Slot.")
@@ -79,8 +84,10 @@ class ConfirmImageViewController: UIViewController {
             let medicineslot = medicineslots[SlotSelected]
             let date = Date()
             let user = User.defaultUser(realm)
-            let record = Record(medicineslotID: medicineslot.SlotID, user: user, imageData: imagedata, date: date)
+            let imageObj = Image(imageData: imagedata)
+            let record = Record(medicineslotID: medicineslot.SlotID, user: user, imageID:imageObj.imageID, date: date)
             try! realm.write {
+                realm.add(imageObj)
                 realm.add(record)
             }
             //Save Successful

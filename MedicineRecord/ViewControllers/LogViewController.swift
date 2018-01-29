@@ -22,9 +22,9 @@ class LogViewController: UITableViewController {
     var medicineslot:MedicineSlot!
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        //Don't extract all at once for optimization
         records = realm.objects(Record.self).sorted(byKeyPath: "timestamp", ascending: false)
-       // print(records)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -47,10 +47,18 @@ class LogViewController: UITableViewController {
         let row = indexPath.row
         if (editingStyle == UITableViewCellEditingStyle.delete)
         {
-            try! realm.write {
-                realm.delete(records[row])
-            }
-            tableView.reloadData()
+            let alertController = UIAlertController(title:"Are you sure?", message:"You will lose the data forever.", preferredStyle: .alert)
+            let alertAction_yes = UIAlertAction(title: "Yes", style: .destructive, handler: {
+                (action) -> Void in
+                try! self.realm.write {
+                    self.realm.delete(self.records[row])
+                }
+                tableView.reloadData()
+            })
+            
+            alertController.addAction(alertAction_yes)
+            alertController.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+            present(alertController, animated: true, completion: nil)
         }
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -81,7 +89,8 @@ class LogViewController: UITableViewController {
         let IdealTimeofSlot = medicineslot.IdealTime
         cell.IdealTimeLabel.text = UIMethods.stringofIdealTime(IdealTimeofSlot)
         cell.DateLabel.text = UIMethods.stringOfDate(record.date!)
-        cell.MedicinesImage.image =  UIImage(data:record.imageData!)
+        let imageObj = realm.object(ofType: Image.self, forPrimaryKey: record.imageID)!
+        cell.MedicinesImage.image =  UIImage(data:imageObj.imageData!)
         return cell
     }
     @IBAction func Refresh_TouchUpInside(_ sender: UIBarButtonItem) {

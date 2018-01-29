@@ -29,6 +29,8 @@
 		5D8F354E1FEE30BB00CFC1ED /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D8F354C1FEE30BB00CFC1ED /* LaunchScreen.storyboard */; };
 		5D8F35561FF2253900CFC1ED /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F35551FF2253900CFC1ED /* CameraViewController.swift */; };
 		5D981A5F1FFE3FC70092B4CB /* SlotGraphViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D981A5E1FFE3FC70092B4CB /* SlotGraphViewCell.swift */; };
+		5DC2E935201D8873006C293C /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC2E934201D8873006C293C /* Notifications.swift */; };
+		5DC2E959201EF77A006C293C /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC2E958201EF77A006C293C /* Image.swift */; };
 		5DC6F3E81FFFA87500D017A7 /* AddMedicineSlotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC6F3E71FFFA87500D017A7 /* AddMedicineSlotViewController.swift */; };
 		5DC6F3EA1FFFBB0800D017A7 /* SlotNameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC6F3E91FFFBB0800D017A7 /* SlotNameCell.swift */; };
 		5DC6F3EC1FFFBC8400D017A7 /* ShowTimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC6F3EB1FFFBC8400D017A7 /* ShowTimeCell.swift */; };
@@ -63,6 +65,8 @@
 		5D8F354F1FEE30BB00CFC1ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D8F35551FF2253900CFC1ED /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		5D981A5E1FFE3FC70092B4CB /* SlotGraphViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlotGraphViewCell.swift; sourceTree = "<group>"; };
+		5DC2E934201D8873006C293C /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		5DC2E958201EF77A006C293C /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		5DC6F3E71FFFA87500D017A7 /* AddMedicineSlotViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMedicineSlotViewController.swift; sourceTree = "<group>"; };
 		5DC6F3E91FFFBB0800D017A7 /* SlotNameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlotNameCell.swift; sourceTree = "<group>"; };
 		5DC6F3EB1FFFBC8400D017A7 /* ShowTimeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowTimeCell.swift; sourceTree = "<group>"; };
@@ -93,6 +97,7 @@
 				5D0150591FFF75B500D3EF7E /* Medicine.swift */,
 				5D0150571FFF5AF600D3EF7E /* User.swift */,
 				5D4EEE5620021F420056ADEE /* Record.swift */,
+				5DC2E958201EF77A006C293C /* Image.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -103,6 +108,7 @@
 				5D4E7AD820087FBE00F07DA4 /* GetRecords.swift */,
 				5D4E7ADD2009F62300F07DA4 /* StartingRealmMethods.swift */,
 				5D4E7ADB2009CC0900F07DA4 /* UIMethods.swift */,
+				5DC2E934201D8873006C293C /* Notifications.swift */,
 			);
 			path = DataController;
 			sourceTree = "<group>";
@@ -337,6 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D4E7ADE2009F62300F07DA4 /* StartingRealmMethods.swift in Sources */,
+				5DC2E959201EF77A006C293C /* Image.swift in Sources */,
 				5D981A5F1FFE3FC70092B4CB /* SlotGraphViewCell.swift in Sources */,
 				5D08B1B92005D3230028BB6F /* ShowRecordViewController.swift in Sources */,
 				5D01505E1FFF7C0800D3EF7E /* ShowMedicineSlotsViewController.swift in Sources */,
@@ -354,6 +361,7 @@
 				5D4EEE552001C1A50056ADEE /* AddMedicineViewController.swift in Sources */,
 				5D4EEE5720021F420056ADEE /* Record.swift in Sources */,
 				5D0150561FFF549F00D3EF7E /* MedicineSlot.swift in Sources */,
+				5DC2E935201D8873006C293C /* Notifications.swift in Sources */,
 				5D0150581FFF5AF600D3EF7E /* User.swift in Sources */,
 				5DDD704920010F78008AA294 /* AcceptableErrorTimePickerCell.swift in Sources */,
 				5D8F35561FF2253900CFC1ED /* CameraViewController.swift in Sources */,
