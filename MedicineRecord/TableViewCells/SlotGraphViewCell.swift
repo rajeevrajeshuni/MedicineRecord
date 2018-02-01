@@ -13,4 +13,5 @@ class SlotGraphViewCell:UITableViewCell{
     //static let reuseIdentifier = "SlotView"
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var chtChart: BarChartView!
+    @IBOutlet weak var accuracyLabel: UILabel!
 }

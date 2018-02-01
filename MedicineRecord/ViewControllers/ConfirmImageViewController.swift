@@ -20,13 +20,21 @@ class ConfirmImageViewController: UIViewController {
     var realm = try! Realm()
     var user:User?
     var medicineslots:Results<MedicineSlot>!
+    var records:Results<Record>!
     override func viewDidLoad() {
         super.viewDidLoad()
         photo.image = self.image
         user = User.defaultUser(realm)
-        medicineslots = realm.objects(MedicineSlot.self).filter("current = %@",1)
-        SlotNameLabel.text = "Select"
-        SlotSelected = -1
+        medicineslots = realm.objects(MedicineSlot.self).sorted(byKeyPath: "timeofDay", ascending: true)
+        SlotSelected = selectSlot(medicineslots)
+        if(SlotSelected == -1)
+        {
+            SlotNameLabel.text = "Select"
+        }
+        else
+        {
+            SlotNameLabel.text = UIMethods.TimeinString(medicineslots[SlotSelected].timeofDay)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -52,19 +60,26 @@ class ConfirmImageViewController: UIViewController {
         }
     }
     @IBAction func SlotChangeButton_TouchUpInside(_ sender: Any) {
-        let alert = UIAlertController(title:"Select a Medicine Slot",message:"",preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction.init(title: "Select", style: .default, handler: {
+        let alert = UIAlertController(title:nil,message:nil,preferredStyle: .actionSheet)
+        /*alert.addAction(UIAlertAction.init(title: "Select", style: .default, handler: {
             (action) -> Void in
             self.SlotNameLabel.text = "Select"
             self.SlotSelected = -1
-        }))
+        }))*/
         for i in 0..<medicineslots.count{
-            alert.addAction(UIAlertAction(title:medicineslots[i].SlotName,style: .default,handler: {
+            let slotString:String = UIMethods.TimeinString(medicineslots[i].timeofDay)
+            /*if(i==SlotSelected)
+            {
+                 alert.addAction(UIAlertAction(title:"Selected - "+slotString,style: .destructive,handler:nil))
+                continue;
+            }*/
+            alert.addAction(UIAlertAction(title:slotString,style: .default,handler: {
                 (action) -> Void in
-                self.SlotNameLabel.text = self.medicineslots[i].SlotName
+                self.SlotNameLabel.text = slotString
                 self.SlotSelected = i
             }))
         }
+        alert.addAction(UIAlertAction(title:"Cancel",style: .cancel,handler:nil))
         present(alert,animated: true,completion: nil)
     }
     func saveinDatabase() -> Bool
@@ -85,7 +100,19 @@ class ConfirmImageViewController: UIViewController {
             let date = Date()
             let user = User.defaultUser(realm)
             let imageObj = Image(imageData: imagedata)
-            let record = Record(medicineslotID: medicineslot.SlotID, user: user, imageID:imageObj.imageID, date: date)
+            records = realm.objects(Record.self).filter("medicineslotID = %@",medicineslot.timeofDay).sorted(byKeyPath: "date", ascending: false)
+            if(records.count>0)
+            {
+                print("Dishum")
+                let topRecordsDateComponents = Calendar.current.dateComponents([.day,.month,.year], from: records[0].date!)
+                let currentDateComponents = Calendar.current.dateComponents([.day,.month,.year], from:date)
+                if(topRecordsDateComponents.day!==currentDateComponents.day! && topRecordsDateComponents.month!==currentDateComponents.month! && topRecordsDateComponents.year!==currentDateComponents.year!)
+                {
+                    showAlert(with:"You already took medicines for the selected Medicine Slot.")
+                    return false
+                }
+            }
+            let record = Record(medicineslotID: medicineslot.timeofDay, user: user, imageID:imageObj.imageID, date: date)
             try! realm.write {
                 realm.add(imageObj)
                 realm.add(record)
@@ -124,5 +151,21 @@ class ConfirmImageViewController: UIViewController {
                 if !success { NSLog("error creating asset: \(error)") }
                 })
         }
+    }
+    func selectSlot(_ medicineslots:Results<MedicineSlot>) -> Int
+    {
+        var slot = -1;
+        let date = Date()
+        //print(medicineslots.count)
+        for i in 0..<medicineslots.count
+        {
+            //print(UIMethods.getDifference(date, medicineslots[i].timeofDay),medicineslots[i].AcceptableErrorTime)
+            if(UIMethods.getDifference(date, medicineslots[i].timeofDay)<medicineslots[i].AcceptableErrorTime)
+            {
+                slot = i;
+                return slot;
+            }
+        }
+        return slot
     }
 }

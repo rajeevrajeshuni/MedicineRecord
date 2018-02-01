@@ -11,7 +11,7 @@ import RealmSwift
 
 class MedicineSlot:Object{
     
-    convenience init(timeofDay:Int, SlotName:String, ErrorTime:Int)
+    convenience init(timeofDay:Int, ErrorTime:Int)
     {
         self.init()
         self.timeofDay = timeofDay
@@ -21,7 +21,6 @@ class MedicineSlot:Object{
     //var Medicines = RealmSwift.List<Medicine>()
     @objc dynamic var AcceptableErrorTime:Int = 0 //value denotes time in minutes.
     //Sepcifies if the medicine slot is currently used or an old one. It's important to keep the old slots because we still need to maintain the old records even if the meds changed.
-    @objc dynamic var current = 1
     @objc dynamic var timeofDay:Int = 0
     
     override static func primaryKey() -> String{

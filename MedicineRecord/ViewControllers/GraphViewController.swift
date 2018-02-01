@@ -22,14 +22,15 @@ class GraphViewController: UITableViewController {
     var chtChart:BarChartView!
     var noData = 0
     var AcceptableErrorTime = 0
-    var activeMedicineSlots:Results<MedicineSlot>!
+    var medicineSlots:Results<MedicineSlot>!
+    var accuracy:Double = 0
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         //print(Date())
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
-        activeMedicineSlots = realm.objects(MedicineSlot.self).filter("current = %@",1)
+        medicineSlots = realm.objects(MedicineSlot.self).sorted(byKeyPath: "timeofDay", ascending: true)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -41,7 +42,7 @@ class GraphViewController: UITableViewController {
         //StartingRealmMethods.addEntriestoRealm()
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1 + activeMedicineSlots.count
+        return 1 + medicineSlots.count
     }
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = indexPath.row
@@ -49,7 +50,7 @@ class GraphViewController: UITableViewController {
         {
             return CGFloat(44)
         }
-        return CGFloat(325)
+        return CGFloat(375)
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
@@ -73,11 +74,14 @@ class GraphViewController: UITableViewController {
         {
             let i = row - 1
             let cell = tableView.dequeueReusableCell(withIdentifier: "SlotGraphViewCell", for: indexPath) as! SlotGraphViewCell
-            cell.label.text = activeMedicineSlots[i].SlotName
+            cell.label.text = UIMethods.TimeinString(medicineSlots[i].timeofDay) + " - " + String(medicineSlots[i].AcceptableErrorTime) + "min"
             chtChart = cell.chtChart
-            slotRecords = realm.objects(Record.self).filter("medicineslotID = %@",activeMedicineSlots[i].SlotID)
+            slotRecords = realm.objects(Record.self).filter("medicineslotID = %@",medicineSlots[i].timeofDay)
             //draw the chart
             updateGraph(slotRecords)
+            //accuracy = 0.960555
+            accuracy = Double(Int(accuracy*1000))/1000 //Converting accuracy to required format.
+            cell.accuracyLabel.text = "Accuracy: " + String(accuracy*100) + "%"
             return cell
         }
     }
@@ -109,7 +113,7 @@ class GraphViewController: UITableViewController {
             if(i>=records!.count || (UIMethods.stringOfOnlyDate(records![i].date!) != tempdate_string))
             {
                 dates.append(tempdate_string)
-                let value = BarChartDataEntry.init(x: xValue, y: 4.0)
+                let value = BarChartDataEntry.init(x: xValue, y: 4.0) // Tablet is missed
                 colors.append(NSUIColor.purple)
                 xValue = xValue+1
                 barChartEntry.append(value)
@@ -122,7 +126,7 @@ class GraphViewController: UITableViewController {
             }
             
             //barLabels.append(UIMethods.stringOfOnlyTime(records[i].date!))
-            let temp = UIMethods.getDifference(records![i].date!,medicineslot.IdealTime)
+            let temp = UIMethods.getDifference(records![i].date!,medicineslot.timeofDay)
             
             if(showGreenBars == 0 && temp <= medicineslot.AcceptableErrorTime)
             {
@@ -142,7 +146,7 @@ class GraphViewController: UITableViewController {
             //Assigns for values of > AccetableErrorTime
             if(temp>medicineslot.AcceptableErrorTime)
             {
-                yValue = Double(3)
+                yValue = Double(3) //Tablet is taken but outside the acceptable Error Time.
             }
             else
             {
@@ -177,6 +181,15 @@ class GraphViewController: UITableViewController {
             chtChart.noDataText = "All tablets taken on time between " + UIMethods.stringOfOnlyDate(startDate) + " and " + endDate_String
             return
         }
+        var countInTime = 0 //Count for number of tablets taken with in acceptable Error Time
+        for i in 0..<barChartEntry.count
+        {
+            if(barChartEntry[i].y<3)
+            {
+                countInTime = countInTime + 1
+            }
+        }
+        accuracy = Double(countInTime)/Double(barChartEntry.count)
         let barChartDataSet = BarChartDataSet.init(values: barChartEntry, label: "Deviation")
         barChartDataSet.colors = colors
         let chartData = BarChartData()
@@ -243,7 +256,7 @@ class GraphViewController: UITableViewController {
     // We receive the last record in the Results from the realm.
     func getendDate_Chart(_ record:Record) -> Date
     {
-        let slotID = record.medicineslotID!
+        let slotID = record.medicineslotID
         let lastRecordDate = record.date!
         let date = Date()
         let calendar = Calendar.current
@@ -261,7 +274,7 @@ class GraphViewController: UITableViewController {
         let timeofDay = hour*60+minute
         let medicineslot = realm.object(ofType: MedicineSlot.self, forPrimaryKey: slotID)!
         //Checking whether medicines time has passed for the current day.
-        if(timeofDay > medicineslot.timeofDayinMinutes + medicineslot.AcceptableErrorTime)
+        if(timeofDay > medicineslot.timeofDay + medicineslot.AcceptableErrorTime)
         {
             return date
         }
@@ -294,7 +307,7 @@ class GraphViewController: UITableViewController {
     }
     func getmedicineslot(forRecord record:Record) -> MedicineSlot
     {
-        let slotID = record.medicineslotID!
+        let slotID = record.medicineslotID
         return realm.object(ofType: MedicineSlot.self, forPrimaryKey: slotID)!
     }
 }

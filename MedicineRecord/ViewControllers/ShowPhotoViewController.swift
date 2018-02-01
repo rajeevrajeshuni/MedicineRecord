@@ -9,18 +9,18 @@
 import Foundation
 import UIKit
 import RealmSwift
-class ShowRecordViewController:UIViewController{
+class ShowPhotoViewController:UIViewController{
     var record:Record!
     let realm = try! Realm()
     override func viewDidLoad() {
         super.viewDidLoad()
-        let slotID = record.medicineslotID
-        let medicineslot = realm.object(ofType: MedicineSlot.self, forPrimaryKey: slotID)!
+        //let slotID = record.medicineslotID
+        //let medicineslot = realm.object(ofType: MedicineSlot.self, forPrimaryKey: slotID)!
         let imageObj = realm.object(ofType: Image.self, forPrimaryKey: record.imageID!)!
         RecordImageView.image = UIImage(data:imageObj.imageData!)
     }
     @IBOutlet weak var RecordImageView: UIImageView!
-    func getMedicinestext(_ medicines:RealmSwift.List<Medicine>) -> String
+    /*func getMedicinestext(_ medicines:RealmSwift.List<Medicine>) -> String
     {
         var string = "Medicines: "
         for i in 0..<medicines.count{
@@ -35,5 +35,5 @@ class ShowRecordViewController:UIViewController{
             }
         }
         return string
-    }
+    }*/
 }

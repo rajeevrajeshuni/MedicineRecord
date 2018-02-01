@@ -64,8 +64,11 @@ class UIMethods {
         return diff
      }
  */
-    static func getDifference(_ date:Date,_ IdealTime:List<Int>) -> Int
+    static func getDifference(_ date:Date,_ timeOfDay:Int) -> Int
     {
+        var IdealTime = [0,0]
+        IdealTime[0] = Int(timeOfDay/60)
+        IdealTime[1] = Int(timeOfDay%60)
         var diff = 0
         var diff1 = 0
         var diff2 = 0
@@ -160,5 +163,42 @@ class UIMethods {
             minute = "0" + minute
         }
         return "Ideal Time: " + hour + ":" + minute + "Hrs"
+    }
+    static func TimeinString(_ time:Int)->String
+    {
+        
+        var hour = Int(time/60)
+        var minutes = Int(time%60)
+        var minutesString = String(minutes)
+        var hourString = String(hour)
+        //var ans:String = ""
+        if(hour==0)
+        {
+            hourString = "12"
+        }
+        if(minutes<10)
+        {
+            minutesString = "0"+minutesString
+        }
+        if(hour>0 && hour<10)
+        {
+            hourString = "0"+hourString
+        }
+        if(hour<12)
+        {
+            return hourString + ":" + minutesString + " AM"
+        }
+        else if(hour==12)
+        {
+            return hourString + ":" + minutesString + " PM"
+        }
+        else if(hour<22)
+        {
+            return "0" + String(hour-12) + ":" + minutesString + " PM"
+        }
+        else
+        {
+            return String(hour-12) + ":" + minutesString + " PM"
+        }
     }
 }

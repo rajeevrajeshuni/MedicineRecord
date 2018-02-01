@@ -16,20 +16,18 @@ class AddMedicineSlotViewController:UITableViewController{
     @IBOutlet weak var SaveButton: UIBarButtonItem!
     @IBOutlet weak var CancelButton: UIBarButtonItem!
     var rowTouched:Int = -1
-    //idealTime:[Int],Medicines:[Medicine],slotName:String,errorTime:Int)
-    var edit:Bool = false
-    var slotNames = ["Slot Name","Time","Medicines"]
     var realm = try! Realm()
-    var temp_Int_list:[Int] = [0,0]
-    var temp_Medicine_list:[Medicine] = []
-    var temp_ErrorTime = 0
-    var temp_Name = ""
-    var slotID: String!
+   // var temp_Int_list:[Int] = [0,0]
+   // var temp_Medicine_list:[Medicine] = []
+    var ErrorTime = 30 // Acceptable Error time will always be 30mins. Assumption.
+    var timeOfDay = 0
+    //var temp_Name = ""
+    //var slotID: String!
     var medicineslot:MedicineSlot!
-    let ShowTimeCell_IdealTime_IndexPath = IndexPath(row:0,section:1)
-    let IdealTimePickerCell_IndexPath = IndexPath(row:1,section:1)
-    let ShowTimeCell_AcceptableErrorTime_IndexPath = IndexPath(row:2,section:1)
-    let AcceptableErrorTimePickerCell_IndexPath = IndexPath(row:3,section:1)
+    let ShowTimeCell_IdealTime_IndexPath = IndexPath(row:0,section:0)
+    let IdealTimePickerCell_IndexPath = IndexPath(row:1,section:0)
+    let ShowTimeCell_AcceptableErrorTime_IndexPath = IndexPath(row:2,section:0)
+    let AcceptableErrorTimePickerCell_IndexPaths = [IndexPath(row: 3, section: 0),IndexPath(row: 4, section: 0),IndexPath(row: 5, section: 0),IndexPath(row: 6, section: 0),IndexPath(row: 7, section: 0)]
     //This will be true if Showcell cell showing IdealTime is clicked.
     var ShowTimeCell_IdealTime_Clicked = false
     
@@ -37,48 +35,36 @@ class AddMedicineSlotViewController:UITableViewController{
     var ShowTimeCell_AcceptableErrorTime_Clicked = false
     override func viewDidLoad() {
         super.viewDidLoad()
-        if(edit){
+        /*if(edit){
             title = "Edit Medicine Slot"
             //filling temp_Medicine_list
-            for i in medicineslot.Medicines
-            {
-                temp_Medicine_list.append(i)
-            }
-            temp_Int_list[0] = medicineslot.IdealTime[0]
-            temp_Int_list[1] = medicineslot.IdealTime[1]
-            temp_Name = medicineslot.SlotName
-            temp_ErrorTime = medicineslot.AcceptableErrorTime
-            slotID = medicineslot.SlotID
-        }
+            //temp_Int_list[0] = medicineslot.IdealTime[0]
+            //temp_Int_list[1] = medicineslot.IdealTime[1]
+            //temp_Name = medicineslot.SlotName
+            ErrorTime = medicineslot.AcceptableErrorTime
+            //slotID = medicineslot.SlotID
+        }*/
        // tableView.numberOfSections = 4
-        else{
-            SaveButton.isEnabled=false
-        }
+        //SaveButton.isEnabled=false
         tableView.tableFooterView = UIView(frame: .zero)
     }
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    /*override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return slotNames[section]
-    }
+    }*/
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 1
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch(section){
-        case 0:
-            return 1
-        case 1:
-            return 8
-        case 2:
-            return temp_Medicine_list.count+1
-        default:
-            print("Section ",section)
-            return 0
-        }
+        return 2; // previously 8. Now hiding the option to select acceptable Error Time.
     }
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let section = indexPath.section
+        //let section = indexPath.section
         let row = indexPath.row
-        if(section==1 && row==1)
+        if(row==0)
+        {
+            return 44;
+        }
+        else if(row==1)
         {
             if(ShowTimeCell_IdealTime_Clicked)
             {
@@ -89,7 +75,11 @@ class AddMedicineSlotViewController:UITableViewController{
                 return CGFloat(0)
             }
         }
-        else if(section==1 && row>2)
+        else if(row==2)
+        {
+            return CGFloat(44)
+        }
+        else
         {
             if(ShowTimeCell_AcceptableErrorTime_Clicked)
             {
@@ -100,15 +90,11 @@ class AddMedicineSlotViewController:UITableViewController{
                 return CGFloat(0)
             }
         }
-        else
-        {
-            return CGFloat(44)
-        }
     }
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let section = indexPath.section
+        //let section = indexPath.section
         let row = indexPath.row
-        if(section==1 && row==0)
+        if(row==0)
         {
             //clicked on ShowTimeCell with IdealTime
             
@@ -116,13 +102,14 @@ class AddMedicineSlotViewController:UITableViewController{
             if(ShowTimeCell_AcceptableErrorTime_Clicked)
             {
                 ShowTimeCell_AcceptableErrorTime_Clicked = false
-                let tempIndexPaths = [ShowTimeCell_AcceptableErrorTime_IndexPath,AcceptableErrorTimePickerCell_IndexPath]
+                let tempIndexPaths = [ShowTimeCell_AcceptableErrorTime_IndexPath]
                 tableView.reloadRows(at: tempIndexPaths, with: .automatic)
+                tableView.reloadRows(at: AcceptableErrorTimePickerCell_IndexPaths, with: .automatic)
             }
             self.view.endEditing(true)
             
             let cell = tableView.cellForRow(at: indexPath) as! ShowTimeCell
-            let timepickerIndexPath = IndexPath(row: 1, section: 1)
+            let timepickerIndexPath = IndexPath(row: 1, section: 0)
             let timepickerCell = tableView.cellForRow(at: timepickerIndexPath) as! IdealTimePickerCell
             if(cell.Time.textColor == UIColor.red)
             {
@@ -143,7 +130,7 @@ class AddMedicineSlotViewController:UITableViewController{
                 tableView.reloadRows(at: [timepickerIndexPath], with: .automatic)
             }
         }
-        if(section==1 && row==2)
+        if(row==2)
         {
             //clicked on ShowTimeCell with AcceptableErrorTime
             
@@ -157,8 +144,8 @@ class AddMedicineSlotViewController:UITableViewController{
             self.view.endEditing(true)
             
             let cell = tableView.cellForRow(at: indexPath) as! ShowTimeCell
-            let AcceptableErrortimepickerIndexPath = IndexPath(row: 3, section: 1)
-            let AcceptableErrortimepickerCell = tableView.cellForRow(at: AcceptableErrortimepickerIndexPath) as! AcceptableErrorTimePickerCell
+            let AcceptableErrortimepickerIndexPath = IndexPath(row: 3, section: 0)
+            //let AcceptableErrortimepickerCell = tableView.cellForRow(at: AcceptableErrortimepickerIndexPath) as! AcceptableErrorTimePickerCell
             if(cell.Time.textColor == UIColor.red)
             {
                 cell.Time.textColor = UIColor.black
@@ -166,7 +153,7 @@ class AddMedicineSlotViewController:UITableViewController{
                 ShowTimeCell_AcceptableErrorTime_Clicked = false
                 //AcceptableErrorTimePicker = false
                 //timepickerCell.isHidden = true
-                tableView.reloadRows(at: [AcceptableErrortimepickerIndexPath], with: .automatic)
+                tableView.reloadRows(at: AcceptableErrorTimePickerCell_IndexPaths, with: .automatic)
             }
             else
             {
@@ -175,26 +162,26 @@ class AddMedicineSlotViewController:UITableViewController{
                 ShowTimeCell_AcceptableErrorTime_Clicked = true
                // AcceptableErrorTimePicker = true
                 //timepickerCell.isHidden = false
-                tableView.reloadRows(at: [AcceptableErrortimepickerIndexPath], with: .automatic)
+                tableView.reloadRows(at:AcceptableErrorTimePickerCell_IndexPaths, with: .automatic)
             }
             
         }
-        if(section==1 && row>2)
+        if(row>2)
         {
             closeAllOpenInputs()
             
-            let previousRow = (temp_ErrorTime/15) + 3 // Adding 3 to account for top 3 rows
-            let previousRowIndexPath = IndexPath(row:previousRow,section:1)
+            let previousRow = (ErrorTime/15) + 3 // Adding 3 to account for top 3 rows
+            let previousRowIndexPath = IndexPath(row:previousRow,section:0)
             let previouscell = tableView.cellForRow(at: previousRowIndexPath) as! AcceptableErrorTimePickerCell
             previouscell.accessoryType = .none
             
             let selectedcell = tableView.cellForRow(at: indexPath) as! AcceptableErrorTimePickerCell
             selectedcell.accessoryType = .checkmark
-            temp_ErrorTime = (indexPath.row-3)*15 //Removing 3 to account for top 3 rows
-            tableView.reloadRows(at: [IndexPath(row:2,section:1)], with: .automatic)
+            ErrorTime = (indexPath.row-3)*15 //Removing 3 to account for top 3 rows
+            tableView.reloadRows(at: [IndexPath(row:2,section:0)], with: .automatic)
             
         }
-        if(section==2)
+        /*if(section==2)
         {
             closeAllOpenInputs()
             
@@ -207,9 +194,9 @@ class AddMedicineSlotViewController:UITableViewController{
                 rowTouched = row
                 performSegue(withIdentifier: "EditMedicineSegue", sender: nil)
             }
-        }
+        }*/
     }
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    /*override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         //EditMedicineSegue
         if(segue.identifier == "EditMedicineSegue")
         {
@@ -231,17 +218,17 @@ class AddMedicineSlotViewController:UITableViewController{
             destinationVC.delegate = self
             destinationVC.title = "Add Medicine"
         }
-    }
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        let section = indexPath.section
+    }*/
+    /*override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        //let section = indexPath.section
         let row = indexPath.row
         if(section==2 && row<temp_Medicine_list.count)
         {
             return true
         }
         return false
-    }
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    }*/
+    /*override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         let section = indexPath.section
         let row = indexPath.row
         if (editingStyle == UITableViewCellEditingStyle.delete)
@@ -250,22 +237,15 @@ class AddMedicineSlotViewController:UITableViewController{
             print(temp_Medicine_list)
             tableView.reloadSections([2], with: .automatic)
         }
-    }
+    }*/
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let section = indexPath.section
+        //let section = indexPath.section
         let row = indexPath.row
-        switch(section){
-        case 0:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "SlotNameCell", for: indexPath) as! SlotNameCell
-            cell.SlotName.text = temp_Name
-            cell.delegate = self
-            return cell
-        case 1:
             if(row==0)
             {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ShowTimeCell", for: indexPath) as! ShowTimeCell
                 cell.Time.text = "Ideal Time"
-                cell.TimeString.text = TimeinString(temp_Int_list)
+                cell.TimeString.text = UIMethods.TimeinString(timeOfDay)
                 
                 if(ShowTimeCell_IdealTime_Clicked)
                 {
@@ -288,7 +268,7 @@ class AddMedicineSlotViewController:UITableViewController{
                 //print(date)
                 let formatter = DateFormatter()
                 formatter.dateFormat = "yyyy/MM/dd HH:mm"
-                let DateTime = formatter.date(from: "2016/10/08 " + String(temp_Int_list[0]) + ":" + String(temp_Int_list[1]))
+                let DateTime = formatter.date(from: "2016/10/08 " + String(Int(timeOfDay/60)) + ":" + String(Int(timeOfDay/60)))
                 print("Setting time of Ideal Time Picker String " + String(describing:DateTime))
                cell.IdealTimePicker.setDate(DateTime!, animated: false)
                 return cell
@@ -297,7 +277,7 @@ class AddMedicineSlotViewController:UITableViewController{
             {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ShowTimeCell", for: indexPath) as! ShowTimeCell
                 cell.Time.text = "Acceptable Error Time"
-                cell.TimeString.text = String(temp_ErrorTime)+" Min"
+                cell.TimeString.text = String(ErrorTime)+" Min"
                 if(ShowTimeCell_AcceptableErrorTime_Clicked)
                 {
                     cell.Time.textColor = UIColor.red
@@ -315,7 +295,7 @@ class AddMedicineSlotViewController:UITableViewController{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "AcceptableErrorTimePickerCell", for: indexPath) as! AcceptableErrorTimePickerCell
                 //Setting the cell labels to 0,15,30,45,60
                 cell.TimeLabel.text = String(15*(row-3))
-                let currentActiveRow = 3+(temp_ErrorTime/15)
+                let currentActiveRow = 3+(ErrorTime/15)
                 if(row==currentActiveRow)
                 {
                     cell.accessoryType = UITableViewCellAccessoryType.checkmark
@@ -326,28 +306,11 @@ class AddMedicineSlotViewController:UITableViewController{
                 }
                 return cell
             }
-        case 2:
-            if(row < temp_Medicine_list.count)
-            {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "MedicineNameDosageStringCell", for: indexPath) as! MedicineNameDosageStringCell
-                cell.MedicineNameDosageString.text = temp_Medicine_list[row].name + " - " + temp_Medicine_list[row].dosage
-                return cell
-            }
-            else
-            {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "AddMedicineCell", for: indexPath)
-                return cell
-            }
-        default:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "AddMedicineCell", for: indexPath)
-            
-            return cell
-        }
     }
     @IBAction func TouchSaveButton(_ sender: Any) {
         closeAllOpenInputs()
         saveMedicineSlot()
-        dismiss(animated:true, completion:nil)
+        
     }
     @IBAction func TouchCancelButton(_ sender: Any) {
         closeAllOpenInputs()
@@ -355,73 +318,53 @@ class AddMedicineSlotViewController:UITableViewController{
     }
     func saveMedicineSlot(){
         //Saving Medicine Slot in DataBase
-        var Int_List = RealmSwift.List<Int>()
-        var Medicine_List = RealmSwift.List<Medicine>()
-        for i in temp_Int_list{
-            Int_List.append(i)
-        }
-        for i in temp_Medicine_list{
-            Medicine_List.append(i)
-        }
-        medicineslot = MedicineSlot(IdealTime:Int_List,Medicines:Medicine_List,SlotName:temp_Name,ErrorTime:temp_ErrorTime)
-        if(edit)
+        medicineslot = MedicineSlot(timeofDay: timeOfDay, ErrorTime: ErrorTime)
+        var temp:MedicineSlot?
+        temp = realm.object(ofType: MedicineSlot.self, forPrimaryKey: timeOfDay)
+        if(temp == nil)
         {
             try! realm.write
             {
                 realm.add(medicineslot)
-                let old = realm.objects(MedicineSlot.self).filter("SlotID = %@",slotID)
-                print("old Slot Name",old[0].SlotName)
-                old[0].setValue(0, forKey:"current")
             }
+            dismiss(animated:true, completion:nil)
         }
         else
         {
-            try! realm.write
-            {
-                realm.add(medicineslot)
-            }
+            let alertController = UIAlertController.init(title: "Slot already exists at the selected time. Please select a different Time.", message: nil, preferredStyle: .alert)
+            let action = UIAlertAction.init(title: "Ok", style: .default, handler: nil)
+            alertController.addAction(action)
+            present(alertController, animated: false, completion: nil)
         }
-        print(medicineslot.SlotName)
-        for i in 0..<medicineslot.Medicines.count{
+        //}
+        //print(medicineslot.SlotName)
+        /*for i in 0..<medicineslot.Medicines.count{
             print(medicineslot.Medicines[i].name)
             print(medicineslot.Medicines[i].dosage)
-        }
-        print(medicineslot.IdealTime)
+        }*/
+        print(medicineslot.timeofDay)
         print(medicineslot.AcceptableErrorTime)
-        print(medicineslot.SlotID)
+        //print(medicineslot.SlotID)
     }
-    func TimeinString(_ time:[Int])->String
+    func closeAllOpenInputs()
     {
-        var hour = String(time[0])
-        var minutes = String(time[1])
-        //var ans:String = ""
-        if(time[0]==0)
+        if(ShowTimeCell_IdealTime_Clicked)
         {
-            hour = "12"
+            ShowTimeCell_IdealTime_Clicked = false
+            let tempIndexPaths = [ShowTimeCell_IdealTime_IndexPath,IdealTimePickerCell_IndexPath]
+            tableView.reloadRows(at: tempIndexPaths, with: .automatic)
         }
-        if(minutes.count==1)
+        if(ShowTimeCell_AcceptableErrorTime_Clicked)
         {
-            minutes = "0"+minutes
+            ShowTimeCell_AcceptableErrorTime_Clicked = false
+            let tempIndexPaths = [ShowTimeCell_AcceptableErrorTime_IndexPath]
+            tableView.reloadRows(at: tempIndexPaths, with: .automatic)
+            tableView.reloadRows(at: AcceptableErrorTimePickerCell_IndexPaths, with:.automatic)
         }
-        if(hour.count==1)
-        {
-            hour = "0"+hour
-        }
-        if(time[0]<12)
-        {
-            return String(hour) + ":" + String(minutes) + " AM"
-        }
-        else if(time[0]==12)
-        {
-            return String(time[0]) + ":" + String(minutes) + " PM"
-        }
-        else
-        {
-            return String(time[0]-12) + ":" + String(minutes) + " PM"
-        }
+        self.view.endEditing(true)
     }
 }
-extension AddMedicineSlotViewController:SlotNameCellDelegate{
+/*extension AddMedicineSlotViewController:SlotNameCellDelegate{
     
     //SlotNameCellDelegate
     func dismissKeyboard(_ cell: UITableViewCell, _ TextField: UITextField) {
@@ -442,7 +385,7 @@ extension AddMedicineSlotViewController:SlotNameCellDelegate{
             SaveButton.isEnabled=false
         }
     }
-    func SlotNameEditingDidBegin(_ cell: UITableViewCell, _ TextField: UITextField) {
+    /*func SlotNameEditingDidBegin(_ cell: UITableViewCell, _ TextField: UITextField) {
         
         if(ShowTimeCell_IdealTime_Clicked)
         {
@@ -458,9 +401,9 @@ extension AddMedicineSlotViewController:SlotNameCellDelegate{
         }
         
        
-    }
-}
-extension AddMedicineSlotViewController:AddMedicineDelegate{
+    }*/
+}*/
+/*extension AddMedicineSlotViewController:AddMedicineDelegate{
     //AddMedicineDelegate
     func saveMedicine_FinishEditing(_ controller:AddMedicineViewController,_ temp_name:String,_ temp_dosage:String,_ row:Int)
     {
@@ -489,33 +432,17 @@ extension AddMedicineSlotViewController:AddMedicineDelegate{
             SaveButton.isEnabled=false
         }
     }
-    func closeAllOpenInputs()
-    {
-        if(ShowTimeCell_IdealTime_Clicked)
-        {
-            ShowTimeCell_IdealTime_Clicked = false
-            let tempIndexPaths = [ShowTimeCell_IdealTime_IndexPath,IdealTimePickerCell_IndexPath]
-            tableView.reloadRows(at: tempIndexPaths, with: .automatic)
-        }
-        if(ShowTimeCell_AcceptableErrorTime_Clicked)
-        {
-            ShowTimeCell_AcceptableErrorTime_Clicked = false
-            let tempIndexPaths = [ShowTimeCell_AcceptableErrorTime_IndexPath,AcceptableErrorTimePickerCell_IndexPath]
-            tableView.reloadRows(at: tempIndexPaths, with: .automatic)
-        }
-        self.view.endEditing(true)
-    }
-}
+ 
+}*/
 extension AddMedicineSlotViewController:IdealTimePickerDelegate{
     func IdealTimePicker_DateChanged(_ cell: UITableViewCell, _ IdealTimePicker: UIDatePicker) {
-        let IdealTimeStringIndexPath = IndexPath.init(row: 0, section: 1)
+        let IdealTimeStringIndexPath = IndexPath.init(row: 0, section: 0)
         var datePassed = IdealTimePicker.date
         //datePassed.addTimeInterval(19800) //Changing the time to IST
         let hour = Calendar.current.component(.hour, from: datePassed)
         let minute = Calendar.current.component(.minute, from: datePassed)
-        temp_Int_list[0] = hour
-        temp_Int_list[1] = minute
-        print("IdealTimeChanged:",temp_Int_list)
+        timeOfDay = hour*60+minute
+        print("IdealTimeChanged:",hour," ",minute)
         tableView.reloadRows(at: [IdealTimeStringIndexPath], with: .automatic)
         //print(datePassed)
     }

@@ -10,16 +10,13 @@
 		00240A3AA7C8E8355FB03680 /* Pods_MedicineRecord.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6AFBE9985A978ACE2864299 /* Pods_MedicineRecord.framework */; };
 		5D0150561FFF549F00D3EF7E /* MedicineSlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0150551FFF549F00D3EF7E /* MedicineSlot.swift */; };
 		5D0150581FFF5AF600D3EF7E /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0150571FFF5AF600D3EF7E /* User.swift */; };
-		5D01505A1FFF75B500D3EF7E /* Medicine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0150591FFF75B500D3EF7E /* Medicine.swift */; };
-		5D01505C1FFF78E600D3EF7E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D01505B1FFF78E600D3EF7E /* SettingsViewController.swift */; };
 		5D01505E1FFF7C0800D3EF7E /* ShowMedicineSlotsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D01505D1FFF7C0800D3EF7E /* ShowMedicineSlotsViewController.swift */; };
-		5D08B1B92005D3230028BB6F /* ShowRecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D08B1B82005D3230028BB6F /* ShowRecordViewController.swift */; };
+		5D08B1B92005D3230028BB6F /* ShowPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D08B1B82005D3230028BB6F /* ShowPhotoViewController.swift */; };
 		5D46431D1FF26C44007DB71F /* ConfirmImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46431C1FF26C44007DB71F /* ConfirmImageViewController.swift */; };
 		5D4E7AD72007C4C100F07DA4 /* ShowFiltersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E7AD62007C4C100F07DA4 /* ShowFiltersCell.swift */; };
 		5D4E7AD920087FBE00F07DA4 /* GetRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E7AD820087FBE00F07DA4 /* GetRecords.swift */; };
 		5D4E7ADC2009CC0900F07DA4 /* UIMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E7ADB2009CC0900F07DA4 /* UIMethods.swift */; };
 		5D4E7ADE2009F62300F07DA4 /* StartingRealmMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4E7ADD2009F62300F07DA4 /* StartingRealmMethods.swift */; };
-		5D4EEE552001C1A50056ADEE /* AddMedicineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4EEE542001C1A50056ADEE /* AddMedicineViewController.swift */; };
 		5D4EEE5720021F420056ADEE /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4EEE5620021F420056ADEE /* Record.swift */; };
 		5D8F35421FEE30BB00CFC1ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F35411FEE30BB00CFC1ED /* AppDelegate.swift */; };
 		5D8F35441FEE30BB00CFC1ED /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F35431FEE30BB00CFC1ED /* LogViewController.swift */; };
@@ -44,16 +41,13 @@
 		10A55F5ADEF30695F68D35C8 /* Pods-MedicineRecord.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MedicineRecord.release.xcconfig"; path = "Pods/Target Support Files/Pods-MedicineRecord/Pods-MedicineRecord.release.xcconfig"; sourceTree = "<group>"; };
 		5D0150551FFF549F00D3EF7E /* MedicineSlot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicineSlot.swift; sourceTree = "<group>"; };
 		5D0150571FFF5AF600D3EF7E /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		5D0150591FFF75B500D3EF7E /* Medicine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Medicine.swift; sourceTree = "<group>"; };
-		5D01505B1FFF78E600D3EF7E /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		5D01505D1FFF7C0800D3EF7E /* ShowMedicineSlotsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowMedicineSlotsViewController.swift; sourceTree = "<group>"; };
-		5D08B1B82005D3230028BB6F /* ShowRecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowRecordViewController.swift; sourceTree = "<group>"; };
+		5D08B1B82005D3230028BB6F /* ShowPhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowPhotoViewController.swift; sourceTree = "<group>"; };
 		5D46431C1FF26C44007DB71F /* ConfirmImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmImageViewController.swift; sourceTree = "<group>"; };
 		5D4E7AD62007C4C100F07DA4 /* ShowFiltersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowFiltersCell.swift; sourceTree = "<group>"; };
 		5D4E7AD820087FBE00F07DA4 /* GetRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRecords.swift; sourceTree = "<group>"; };
 		5D4E7ADB2009CC0900F07DA4 /* UIMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMethods.swift; sourceTree = "<group>"; };
 		5D4E7ADD2009F62300F07DA4 /* StartingRealmMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartingRealmMethods.swift; sourceTree = "<group>"; };
-		5D4EEE542001C1A50056ADEE /* AddMedicineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMedicineViewController.swift; sourceTree = "<group>"; };
 		5D4EEE5620021F420056ADEE /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		5D8F353E1FEE30BB00CFC1ED /* MedicineRecord.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MedicineRecord.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D8F35411FEE30BB00CFC1ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -94,7 +88,6 @@
 			isa = PBXGroup;
 			children = (
 				5D0150551FFF549F00D3EF7E /* MedicineSlot.swift */,
-				5D0150591FFF75B500D3EF7E /* Medicine.swift */,
 				5D0150571FFF5AF600D3EF7E /* User.swift */,
 				5D4EEE5620021F420056ADEE /* Record.swift */,
 				5DC2E958201EF77A006C293C /* Image.swift */,
@@ -154,11 +147,9 @@
 				5D8F35451FEE30BB00CFC1ED /* GraphViewController.swift */,
 				5D8F35551FF2253900CFC1ED /* CameraViewController.swift */,
 				5D46431C1FF26C44007DB71F /* ConfirmImageViewController.swift */,
-				5D01505B1FFF78E600D3EF7E /* SettingsViewController.swift */,
 				5D01505D1FFF7C0800D3EF7E /* ShowMedicineSlotsViewController.swift */,
 				5DC6F3E71FFFA87500D017A7 /* AddMedicineSlotViewController.swift */,
-				5D4EEE542001C1A50056ADEE /* AddMedicineViewController.swift */,
-				5D08B1B82005D3230028BB6F /* ShowRecordViewController.swift */,
+				5D08B1B82005D3230028BB6F /* ShowPhotoViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -345,20 +336,17 @@
 				5D4E7ADE2009F62300F07DA4 /* StartingRealmMethods.swift in Sources */,
 				5DC2E959201EF77A006C293C /* Image.swift in Sources */,
 				5D981A5F1FFE3FC70092B4CB /* SlotGraphViewCell.swift in Sources */,
-				5D08B1B92005D3230028BB6F /* ShowRecordViewController.swift in Sources */,
+				5D08B1B92005D3230028BB6F /* ShowPhotoViewController.swift in Sources */,
 				5D01505E1FFF7C0800D3EF7E /* ShowMedicineSlotsViewController.swift in Sources */,
 				5DC6F3E81FFFA87500D017A7 /* AddMedicineSlotViewController.swift in Sources */,
 				5D4E7ADC2009CC0900F07DA4 /* UIMethods.swift in Sources */,
 				5DC6F3EE1FFFBDD000D017A7 /* IdealTimePickerCell.swift in Sources */,
-				5D01505A1FFF75B500D3EF7E /* Medicine.swift in Sources */,
 				5D8F35461FEE30BB00CFC1ED /* GraphViewController.swift in Sources */,
-				5D01505C1FFF78E600D3EF7E /* SettingsViewController.swift in Sources */,
 				5D4E7AD920087FBE00F07DA4 /* GetRecords.swift in Sources */,
 				5D4E7AD72007C4C100F07DA4 /* ShowFiltersCell.swift in Sources */,
 				5DC6F3EA1FFFBB0800D017A7 /* SlotNameCell.swift in Sources */,
 				5D46431D1FF26C44007DB71F /* ConfirmImageViewController.swift in Sources */,
 				5DC6F3F21FFFBE6F00D017A7 /* MedicineNameDosageStringCell.swift in Sources */,
-				5D4EEE552001C1A50056ADEE /* AddMedicineViewController.swift in Sources */,
 				5D4EEE5720021F420056ADEE /* Record.swift in Sources */,
 				5D0150561FFF549F00D3EF7E /* MedicineSlot.swift in Sources */,
 				5DC2E935201D8873006C293C /* Notifications.swift in Sources */,
